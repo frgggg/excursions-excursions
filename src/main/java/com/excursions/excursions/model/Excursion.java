@@ -2,6 +2,7 @@ package com.excursions.excursions.model;
 
 import com.excursions.excursions.validation.ExcursionValidation;
 import lombok.Data;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -63,6 +64,7 @@ public class Excursion {
     @Min(value = EXCURSION_PEOPLE_COUNT_VALUE_MIN, message = EXCURSION_PEOPLE_COUNT_VALIDATION_MESSAGE)
     @Max(value = EXCURSION_PEOPLE_COUNT_VALUE_MAX, message = EXCURSION_PEOPLE_COUNT_VALIDATION_MESSAGE)
     private Integer peopleCount;
+
 
     @ElementCollection(targetClass = Long.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "excursion_places", joinColumns = @JoinColumn(name = "excursion_id"))

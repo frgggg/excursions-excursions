@@ -57,7 +57,7 @@ public class ExcursionServiceImpl implements ExcursionService {
         return savedExcursion;
     }
 
-    /*@Override
+    @Override
     public void deleteEndedExcursions() {
         excursionRepository.deleteEndedExcursions(
                 LocalDateTime.now().plusDays(
@@ -67,29 +67,19 @@ public class ExcursionServiceImpl implements ExcursionService {
     }
 
     @Override
-    public void deleteExcursionsByPlaces(List<Long> places) {
-        excursionRepository.deleteExcursionsByPlaces(
-                placeService.getNotExistPlacesIds(
-                        excursionRepository.getAllPlaces()
-                )
-        );
-    }*/
-
-    @Override
-    public void deleteEndedExcursions() {
-        /*excursionRepository.deleteEndedExcursions(
-                LocalDateTime.now().plusDays(
-                        new Long(deleteEndedExcursionsAfterDay)
-                )
-        );*/
-    }
-
-    @Override
     public void deleteExcursionsByNotExistPlaces() {
         List<Long> allPlaces = excursionRepository.getAllPlaces();
         List<Long> notExistPlaces = placeService.getNotExistPlacesIds(allPlaces);
         System.out.println("deleteExcursionsByPlaces");
         System.out.println("allPlaces = " + allPlaces);
         System.out.println("notExistPlaces = " + notExistPlaces);
+
+        excursionRepository.deleteExcursionsByNotExistPlaces(
+                LocalDateTime.now().plusDays(
+                        new Long(deleteEndedExcursionsAfterDay)
+                ),
+                notExistPlaces
+        );
+
     }
 }
