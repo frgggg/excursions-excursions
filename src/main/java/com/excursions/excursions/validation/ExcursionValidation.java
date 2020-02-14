@@ -5,6 +5,7 @@ import com.excursions.excursions.validation.impl.ExcursionValidationImpl;
 import javax.validation.Constraint;
 import java.lang.annotation.*;
 
+@Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy= ExcursionValidationImpl.class)

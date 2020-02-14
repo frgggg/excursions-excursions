@@ -1,10 +1,9 @@
 package com.excursions.excursions.validation.impl;
 
-import com.excursions.excursions.client.PlaceClient;
+import com.excursions.excursions.exception.ServiceException;
 import com.excursions.excursions.model.Excursion;
+import com.excursions.excursions.service.PlaceService;
 import com.excursions.excursions.validation.ExcursionValidation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -15,12 +14,12 @@ import static com.excursions.excursions.model.Excursion.*;
 
 public class ExcursionValidationImpl implements ConstraintValidator<ExcursionValidation, Excursion> {
 
-    @Autowired
-    private PlaceClient placeClient;
+    private static PlaceService placeService = null;
 
-    @Override
-    public void initialize(ExcursionValidation constraintAnnotation) {
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    public static void initPlaceService(PlaceService placeService) {
+        if(ExcursionValidationImpl.placeService == null) {
+            ExcursionValidationImpl.placeService = placeService;
+        }
     }
 
     @Override
@@ -31,57 +30,57 @@ public class ExcursionValidationImpl implements ConstraintValidator<ExcursionVal
         List<Long> places = excursion.getPlaces();
 
         if(start == null) {
-            context.disableDefaultConstraintViolation();
-            context
-                    .buildConstraintViolationWithTemplate(EXCURSION_START_VALIDATION_MESSAGE)
-                    .addConstraintViolation();
+            setContextForWrongStart(context);
             return false;
-        }
-
-        if(start.isBefore(LocalDateTime.now())) {
-            context.disableDefaultConstraintViolation();
-            context
-                    .buildConstraintViolationWithTemplate(EXCURSION_START_VALIDATION_MESSAGE)
-                    .addConstraintViolation();
+        } else if(start.isBefore(LocalDateTime.now())) {
+            setContextForWrongStart(context);
             return false;
         }
 
         if(stop == null) {
-            context.disableDefaultConstraintViolation();
-            context
-                    .buildConstraintViolationWithTemplate(EXCURSION_STOP_VALIDATION_MESSAGE)
-                    .addConstraintViolation();
+            setContextForWrongStop(context);
             return false;
-        }
-
-        if(stop.isBefore(start)) {
-            context.disableDefaultConstraintViolation();
-            context
-                    .buildConstraintViolationWithTemplate(EXCURSION_STOP_VALIDATION_MESSAGE)
-                    .addConstraintViolation();
+        } else if(stop.isBefore(start)) {
+            setContextForWrongStop(context);
             return false;
         }
 
         if(places == null) {
-            context.disableDefaultConstraintViolation();
-            context
-                    .buildConstraintViolationWithTemplate(EXCURSION_PLACES_VALIDATION_MESSAGE)
-                    .addConstraintViolation();
+            setContextForWrongPlaceList(context);
             return false;
         }
 
-        System.out.println("placeClient = " + placeClient);
-        System.out.println("places = " + places);
-        System.out.println("placeClient.check(places) = " + placeClient.check(places));
-
-        if(placeClient.check(places).size() > 0) {
-            context.disableDefaultConstraintViolation();
-            context
-                    .buildConstraintViolationWithTemplate(EXCURSION_PLACES_VALIDATION_MESSAGE)
-                    .addConstraintViolation();
+        try {
+            if (placeService.getNotExistPlacesIds(places).size() > 0) {
+                setContextForWrongPlaceList(context);
+                return false;
+            }
+        } catch (ServiceException e) {
+            setContextForWrongPlaceList(context);
             return false;
         }
 
         return true;
+    }
+
+    private void setContextForWrongStart(ConstraintValidatorContext context) {
+        context.disableDefaultConstraintViolation();
+        context
+                .buildConstraintViolationWithTemplate(EXCURSION_START_VALIDATION_MESSAGE)
+                .addConstraintViolation();
+    }
+
+    private void setContextForWrongStop(ConstraintValidatorContext context) {
+        context.disableDefaultConstraintViolation();
+        context
+                .buildConstraintViolationWithTemplate(EXCURSION_STOP_VALIDATION_MESSAGE)
+                .addConstraintViolation();
+    }
+
+    private void setContextForWrongPlaceList(ConstraintValidatorContext context) {
+        context.disableDefaultConstraintViolation();
+        context
+                .buildConstraintViolationWithTemplate(EXCURSION_PLACES_VALIDATION_MESSAGE)
+                .addConstraintViolation();
     }
 }

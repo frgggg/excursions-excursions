@@ -1,11 +1,12 @@
 package com.excursions.excursions.service.impl;
 
-import com.excursions.excursions.client.PlaceClient;
 import com.excursions.excursions.model.Excursion;
 import com.excursions.excursions.repository.ExcursionRepository;
 import com.excursions.excursions.service.ExcursionService;
+import com.excursions.excursions.service.PlaceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -26,11 +27,16 @@ public class ExcursionServiceImpl implements ExcursionService {
 
     private ExcursionRepository excursionRepository;
     private EntityManager entityManager;
+    private PlaceService placeService;
+
+    @Value("${excursion.ended.after-day}")
+    private String deleteEndedExcursionsAfterDay;
 
     @Autowired
-    protected ExcursionServiceImpl(ExcursionRepository excursionRepository, EntityManager entityManager) {
+    protected ExcursionServiceImpl(ExcursionRepository excursionRepository, EntityManager entityManager, PlaceService placeService) {
         this.excursionRepository = excursionRepository;
         this.entityManager = entityManager;
+        this.placeService = placeService;
     }
 
     @Override
@@ -49,5 +55,41 @@ public class ExcursionServiceImpl implements ExcursionService {
 
         log.debug(SERVICE_LOG_NEW_ENTITY, savedExcursion);
         return savedExcursion;
+    }
+
+    /*@Override
+    public void deleteEndedExcursions() {
+        excursionRepository.deleteEndedExcursions(
+                LocalDateTime.now().plusDays(
+                        new Long(deleteEndedExcursionsAfterDay)
+                )
+        );
+    }
+
+    @Override
+    public void deleteExcursionsByPlaces(List<Long> places) {
+        excursionRepository.deleteExcursionsByPlaces(
+                placeService.getNotExistPlacesIds(
+                        excursionRepository.getAllPlaces()
+                )
+        );
+    }*/
+
+    @Override
+    public void deleteEndedExcursions() {
+        /*excursionRepository.deleteEndedExcursions(
+                LocalDateTime.now().plusDays(
+                        new Long(deleteEndedExcursionsAfterDay)
+                )
+        );*/
+    }
+
+    @Override
+    public void deleteExcursionsByNotExistPlaces() {
+        List<Long> allPlaces = excursionRepository.getAllPlaces();
+        List<Long> notExistPlaces = placeService.getNotExistPlacesIds(allPlaces);
+        System.out.println("deleteExcursionsByPlaces");
+        System.out.println("allPlaces = " + allPlaces);
+        System.out.println("notExistPlaces = " + notExistPlaces);
     }
 }

@@ -13,6 +13,12 @@ public interface ExcursionService {
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
     Excursion save(String name, LocalDateTime start, LocalDateTime stop, Integer peopleCount, List<Long> places);
 
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
+    void deleteEndedExcursions();
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
+    void deleteExcursionsByNotExistPlaces();
+
     /*
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
     Excursion updateById(Long id, String name, LocalDateTime start, LocalDateTime stop, Integer peopleCount, List<Long> placesIds);

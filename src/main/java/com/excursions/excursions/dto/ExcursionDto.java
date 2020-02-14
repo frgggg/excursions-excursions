@@ -24,10 +24,10 @@ public class ExcursionDto {
     @Size(min = EXCURSION_NAME_LEN_MIN, max = EXCURSION_NAME_LEN_MAX, message = EXCURSION_NAME_VALIDATION_MESSAGE)
     private String name;
 
-    @NotNull(message = EXCURSION_NAME_VALIDATION_MESSAGE)
+    @NotNull(message = EXCURSION_START_VALIDATION_MESSAGE)
     private LocalDateTime start;
 
-    @NotNull(message = EXCURSION_NAME_VALIDATION_MESSAGE)
+    @NotNull(message = EXCURSION_STOP_VALIDATION_MESSAGE)
     private LocalDateTime stop;
 
     @NotNull(message = EXCURSION_PEOPLE_COUNT_VALIDATION_MESSAGE)
