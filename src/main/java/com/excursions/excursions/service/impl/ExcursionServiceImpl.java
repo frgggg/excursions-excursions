@@ -58,6 +58,28 @@ public class ExcursionServiceImpl implements ExcursionService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
     @Override
+    public void setEnabledNewTicketsById(Long id) {
+        Excursion excursionForUpdate = findById(id);
+        if(!excursionForUpdate.getEnableNewTickets()) {
+            excursionForUpdate.setEnableNewTickets(true);
+            saveUtil(excursionForUpdate);
+        }
+        log.info(EXCURSION_SERVICE_LOG_SET_ENABLE_NEW_TICKETS, excursionForUpdate);
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
+    @Override
+    public void setNotEnabledNewTicketsById(Long id) {
+        Excursion excursionForUpdate = findById(id);
+        if(excursionForUpdate.getEnableNewTickets()) {
+            excursionForUpdate.setEnableNewTickets(false);
+            saveUtil(excursionForUpdate);
+        }
+        log.info(EXCURSION_SERVICE_LOG_SET_NOT_ENABLE_NEW_TICKETS, excursionForUpdate);
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
+    @Override
     public void deleteEndedExcursions() {
         List<Excursion> endedExcursions = excursionRepository.findByStopBefore(LocalDateTime.now());
         if(endedExcursions != null) {

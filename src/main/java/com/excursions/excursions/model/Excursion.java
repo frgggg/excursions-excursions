@@ -79,6 +79,9 @@ public class Excursion {
     @Column(name = "place_id")
     private List<Long> placesIds;
 
+    @Column(name = "enable-new-tickets")
+    private Boolean enableNewTickets;
+
     protected Excursion() {}
 
     public Excursion(String name,  LocalDateTime start,  LocalDateTime stop, Integer peopleCount, Long coinsCost, List<Long> placesIds) {
@@ -88,5 +91,14 @@ public class Excursion {
         this.peopleCount = peopleCount;
         this.coinsCost = coinsCost;
         this.placesIds = placesIds;
+        enableNewTickets = true;
+    }
+
+    public void setEnableNewTickets(Boolean enableNewTickets) {
+        this.enableNewTickets = enableNewTickets;
+    }
+
+    public Boolean getEnableNewTickets() {
+        return enableNewTickets;
     }
 }

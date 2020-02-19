@@ -6,5 +6,7 @@ public class ExcursionServiceLogMessages {
     public static final String EXCURSION_SERVICE_LOG_DELETE_ENDED_EXCURSION = "deleted ended excursions {}";
     public static final String EXCURSION_SERVICE_LOG_FIND_EXCURSION = "findById Excursion {}";
     public static final String EXCURSION_SERVICE_LOG_FIND_ALL = "find all excursions";
+    public static final String EXCURSION_SERVICE_LOG_SET_ENABLE_NEW_TICKETS = "set enable new tickets for {}";
+    public static final String EXCURSION_SERVICE_LOG_SET_NOT_ENABLE_NEW_TICKETS = "set not enable new tickets for {}";
 
 }

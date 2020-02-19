@@ -15,4 +15,7 @@ public interface ExcursionService {
     void deleteNotEndedExcursionsByNotExistPlaces();
     Excursion findById(Long id);
     List<Excursion> findAll();
+
+    void setEnabledNewTicketsById(Long id);
+    void setNotEnabledNewTicketsById(Long id);
 }
