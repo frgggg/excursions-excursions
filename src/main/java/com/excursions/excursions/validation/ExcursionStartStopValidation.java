@@ -1,6 +1,6 @@
 package com.excursions.excursions.validation;
 
-import com.excursions.excursions.validation.impl.ExcursionValidationImpl;
+import com.excursions.excursions.validation.impl.ExcursionStartStopValidationImpl;
 
 import javax.validation.Constraint;
 import java.lang.annotation.*;
@@ -8,8 +8,8 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy= ExcursionValidationImpl.class)
-public @interface ExcursionValidation {
+@Constraint(validatedBy= ExcursionStartStopValidationImpl.class)
+public @interface ExcursionStartStopValidation {
     String message() default "";
 
     Class<?>[] groups() default {};

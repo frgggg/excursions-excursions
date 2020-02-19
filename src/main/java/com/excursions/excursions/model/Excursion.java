@@ -1,8 +1,7 @@
 package com.excursions.excursions.model;
 
-import com.excursions.excursions.validation.ExcursionValidation;
+import com.excursions.excursions.validation.ExcursionStartStopValidation;
 import lombok.Data;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -16,10 +15,10 @@ import java.util.List;
 import static com.excursions.excursions.validation.message.ValidationMessagesComponents.*;
 
 @Data
-@ExcursionValidation
+@ExcursionStartStopValidation
 @Entity
 @Table(
-        name = "excursion",
+        name = "excursions",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "start"})}
 )
 public class Excursion {
@@ -42,8 +41,12 @@ public class Excursion {
     public static final String EXCURSION_PEOPLE_COUNT_VALIDATION_MESSAGE =
             EXCURSION_PEOPLE_COUNT_FIELD_NAME + INTEGER_FIELD_NOTNULL_MIN_MAX + EXCURSION_PEOPLE_COUNT_VALUE_MIN + INTEGER_FIELD_NOTNULL_MIN_MAX_DIVIDE + EXCURSION_PEOPLE_COUNT_VALUE_MAX;
 
-    public static final String EXCURSION_PLACES_FIELD_NAME = "places";
-    public static final String EXCURSION_PLACES_VALIDATION_MESSAGE = EXCURSION_PLACES_FIELD_NAME + LIST_ID_FIELD_NOTNULL_NOT_EMPTY_EXIST;
+    public static final String EXCURSION_COINS_COST_FIELD_NAME = "coinsCost";
+    public static final long EXCURSION_COINS_COST_MIN = 1l;
+    public static final String EXCURSION_COINS_COST_VALIDATION_MESSAGE = EXCURSION_COINS_COST_FIELD_NAME + LONG_FIELD_NOTNULL_NOT_NEGATIVE;
+
+    public static final String EXCURSION_PLACES_IDS_FIELD_NAME = "placesIds";
+    public static final String EXCURSION_PLACES_IDS_VALIDATION_MESSAGE = EXCURSION_PLACES_IDS_FIELD_NAME + " must be mot null, not empty and include exist places ids";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -60,23 +63,30 @@ public class Excursion {
     @Column(name = "stop", nullable = false)
     private LocalDateTime stop;
 
+    @Column(name = "coins_cost", nullable = false)
+    @NotNull(message = EXCURSION_COINS_COST_VALIDATION_MESSAGE)
+    @Min(value = EXCURSION_COINS_COST_MIN, message = EXCURSION_COINS_COST_VALIDATION_MESSAGE)
+    @Max(value = Long.MAX_VALUE, message = EXCURSION_COINS_COST_VALIDATION_MESSAGE)
+    private Long coinsCost;
+
     @Column(name = "people_count", nullable = false)
     @Min(value = EXCURSION_PEOPLE_COUNT_VALUE_MIN, message = EXCURSION_PEOPLE_COUNT_VALIDATION_MESSAGE)
     @Max(value = EXCURSION_PEOPLE_COUNT_VALUE_MAX, message = EXCURSION_PEOPLE_COUNT_VALIDATION_MESSAGE)
     private Integer peopleCount;
 
-
     @ElementCollection(targetClass = Long.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "excursion_places", joinColumns = @JoinColumn(name = "excursion_id"))
-    private List<Long> places;
+    @Column(name = "place_id")
+    private List<Long> placesIds;
 
     protected Excursion() {}
 
-    public Excursion(String name,  LocalDateTime start,  LocalDateTime stop, Integer peopleCount, List<Long> places) {
+    public Excursion(String name,  LocalDateTime start,  LocalDateTime stop, Integer peopleCount, Long coinsCost, List<Long> placesIds) {
         this.name = name;
         this.start = start;
         this.stop = stop;
         this.peopleCount = peopleCount;
-        this.places = places;
+        this.coinsCost = coinsCost;
+        this.placesIds = placesIds;
     }
 }

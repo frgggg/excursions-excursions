@@ -3,7 +3,7 @@ package com.excursions.excursions.validation.impl;
 import com.excursions.excursions.exception.ServiceException;
 import com.excursions.excursions.model.Excursion;
 import com.excursions.excursions.service.PlaceService;
-import com.excursions.excursions.validation.ExcursionValidation;
+import com.excursions.excursions.validation.ExcursionStartStopValidation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -12,23 +12,19 @@ import java.util.List;
 
 import static com.excursions.excursions.model.Excursion.*;
 
-public class ExcursionValidationImpl implements ConstraintValidator<ExcursionValidation, Excursion> {
+public class ExcursionStartStopValidationImpl implements ConstraintValidator<ExcursionStartStopValidation, Excursion> {
 
     private static PlaceService placeService = null;
 
     public static void initPlaceService(PlaceService placeService) {
-        if(ExcursionValidationImpl.placeService == null) {
-            ExcursionValidationImpl.placeService = placeService;
+        if(ExcursionStartStopValidationImpl.placeService == null) {
+            ExcursionStartStopValidationImpl.placeService = placeService;
         }
     }
 
     @Override
     public boolean isValid(Excursion excursion, ConstraintValidatorContext context) {
-
         LocalDateTime start = excursion.getStart();
-        LocalDateTime stop = excursion.getStop();
-        List<Long> places = excursion.getPlaces();
-
         if(start == null) {
             setContextForWrongStart(context);
             return false;
@@ -37,6 +33,7 @@ public class ExcursionValidationImpl implements ConstraintValidator<ExcursionVal
             return false;
         }
 
+        LocalDateTime stop = excursion.getStop();
         if(stop == null) {
             setContextForWrongStop(context);
             return false;
@@ -45,22 +42,36 @@ public class ExcursionValidationImpl implements ConstraintValidator<ExcursionVal
             return false;
         }
 
-        if(places == null) {
-            setContextForWrongPlaceList(context);
+        List<Long> placesIds = excursion.getPlacesIds();
+        if(placesIds == null) {
+            setContextForWrongPlacesIds(context);
             return false;
-        }
-
-        try {
-            if (placeService.getNotExistPlacesIds(places).size() > 0) {
-                setContextForWrongPlaceList(context);
+        } else if(placesIds.size() < 1) {
+            setContextForWrongPlacesIds(context);
+            return false;
+        } else {
+            try {
+                if(placeService.getNotExistPlacesIds(placesIds).size() > 0) {
+                    setContextForWrongPlacesIds(context);
+                    return false;
+                }
+            } catch (ServiceException e) {
+                context.disableDefaultConstraintViolation();
+                context
+                        .buildConstraintViolationWithTemplate(e.getMessage())
+                        .addConstraintViolation();
                 return false;
             }
-        } catch (ServiceException e) {
-            setContextForWrongPlaceList(context);
-            return false;
         }
 
         return true;
+    }
+
+    private void setContextForWrongPlacesIds(ConstraintValidatorContext context) {
+        context.disableDefaultConstraintViolation();
+        context
+                .buildConstraintViolationWithTemplate(EXCURSION_PLACES_IDS_VALIDATION_MESSAGE)
+                .addConstraintViolation();
     }
 
     private void setContextForWrongStart(ConstraintValidatorContext context) {
@@ -74,13 +85,6 @@ public class ExcursionValidationImpl implements ConstraintValidator<ExcursionVal
         context.disableDefaultConstraintViolation();
         context
                 .buildConstraintViolationWithTemplate(EXCURSION_STOP_VALIDATION_MESSAGE)
-                .addConstraintViolation();
-    }
-
-    private void setContextForWrongPlaceList(ConstraintValidatorContext context) {
-        context.disableDefaultConstraintViolation();
-        context
-                .buildConstraintViolationWithTemplate(EXCURSION_PLACES_VALIDATION_MESSAGE)
                 .addConstraintViolation();
     }
 }

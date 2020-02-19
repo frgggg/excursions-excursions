@@ -1,7 +1,7 @@
 package com.excursions.excursions.config;
 
 import com.excursions.excursions.quartz.DeleteEndedExcursions;
-import com.excursions.excursions.quartz.DeleteWrongExcursionsByPlaces;
+import com.excursions.excursions.quartz.DeleteNotEndedExcursionsByNotExistPlaces;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,18 +36,18 @@ public class QuartzConfig {
                 .build();
     }
 
-    @Bean("deleteWrongExcursionsByPlacesJobDetail")
-    public JobDetail deleteWrongExcursionsByPlacesJobDetail(){
-        return JobBuilder.newJob(DeleteWrongExcursionsByPlaces.class)
-                .withIdentity(DeleteWrongExcursionsByPlaces.class.getSimpleName() + JOB_IDENTITY_POSTFIX)
+    @Bean("deleteNotEndedExcursionsByNotExistPlacesJobDetail")
+    public JobDetail deleteNotEndedExcursionsByNotExistPlacesJobDetail(){
+        return JobBuilder.newJob(DeleteNotEndedExcursionsByNotExistPlaces.class)
+                .withIdentity(DeleteNotEndedExcursionsByNotExistPlaces.class.getSimpleName() + JOB_IDENTITY_POSTFIX)
                 .storeDurably().build();
     }
 
     @Bean
-    public Trigger deleteWrongExcursionsByPlacesJobTrigger(@Qualifier("deleteWrongExcursionsByPlacesJobDetail") JobDetail findDebtorsJobDetail)
+    public Trigger deleteNotEndedExcursionsByNotExistPlacesJobTrigger(@Qualifier("deleteNotEndedExcursionsByNotExistPlacesJobDetail") JobDetail findDebtorsJobDetail)
     {
         return TriggerBuilder.newTrigger().forJob(findDebtorsJobDetail)
-                .withIdentity(DeleteWrongExcursionsByPlaces.class.getSimpleName() + TRIGGER_IDENTITY_POSTFIX)
+                .withIdentity(DeleteNotEndedExcursionsByNotExistPlaces.class.getSimpleName() + TRIGGER_IDENTITY_POSTFIX)
                 .withSchedule(CronScheduleBuilder.cronSchedule(deleteWrongExcursionsByPlacesCircleConfig))
                 .build();
     }

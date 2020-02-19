@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(value = "PlacesClient", url = "${excursions-places.url}")
+@FeignClient(value = "PlaceClient", url = "${excursions-places.url}")
 public interface PlaceClient {
 
     @GetMapping(value = "${excursions-places.api-check}", produces = "application/json")

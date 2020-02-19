@@ -26,14 +26,14 @@ public class ExcursionRest {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public ExcursionDto create(@Validated @RequestBody ExcursionDto excursionDto) {
         Excursion excursion = excursionService.save(
                 excursionDto.getName(),
                 excursionDto.getStart(),
                 excursionDto.getStop(),
                 excursionDto.getPeopleCount(),
-                excursionDto.getPlaces()
+                excursionDto.getCoinsCost(),
+                excursionDto.getPlacesIds()
         );
 
         ExcursionDto savedExcursionDto = modelMapper.map(excursion, ExcursionDto.class);

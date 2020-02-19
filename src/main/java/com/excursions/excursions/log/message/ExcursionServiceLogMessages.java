@@ -1,6 +1,6 @@
 package com.excursions.excursions.log.message;
 
-public class ServiceLogMessages {
+public class ExcursionServiceLogMessages {
     public static final String SERVICE_LOG_NEW_ENTITY = "New entity: {}";
     public static final String SERVICE_LOG_UPDATE_ENTITY = "Entity with id {} is updated. New = {}";
     public static final String SERVICE_LOG_DELETE_ENTITY = "Delete entity with id={}";
@@ -11,6 +11,4 @@ public class ServiceLogMessages {
 
     public static final String SERVICE_LOG_SET_LAST_MODIFICATION_TIME = "set last modification time";
     public static final String SERVICE_LOG_GET_LAST_MODIFICATION_TIME = "get last modification time";
-
-    public static final String SERVICE_LOG_EXCEPTION = "Exception in service {}. Info: {}";
 }

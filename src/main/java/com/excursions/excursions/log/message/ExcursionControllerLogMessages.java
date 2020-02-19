@@ -1,8 +1,8 @@
 package com.excursions.excursions.log.message;
 
-import static com.excursions.excursions.log.message.ServiceLogMessages.*;
+import static com.excursions.excursions.log.message.ExcursionServiceLogMessages.*;
 
-public class ControllerLogMessages {
+public class ExcursionControllerLogMessages {
     public static final String CONTROLLER_EXCEPTION_CONTROLLER_LOG_NEW_ENTITY = "Exception = {}, message = {}, reason = {}";
 
     public static final String CONTROLLER_LOG_NEW_ENTITY = SERVICE_LOG_NEW_ENTITY;

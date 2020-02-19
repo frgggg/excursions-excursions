@@ -10,12 +10,7 @@ import java.util.List;
 
 public interface ExcursionService {
 
-    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
-    Excursion save(String name, LocalDateTime start, LocalDateTime stop, Integer peopleCount, List<Long> places);
-
-    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
+    Excursion save(String name, LocalDateTime start, LocalDateTime stop, Integer peopleCount, Long coinsCost, List<Long> placesIds);
     void deleteEndedExcursions();
-
-    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
-    void deleteExcursionsByNotExistPlaces();
+    void deleteNotEndedExcursionsByNotExistPlaces();
 }

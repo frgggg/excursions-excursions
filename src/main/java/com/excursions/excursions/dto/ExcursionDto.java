@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,8 +32,14 @@ public class ExcursionDto {
     @Max(value = EXCURSION_PEOPLE_COUNT_VALUE_MAX, message = EXCURSION_PEOPLE_COUNT_VALIDATION_MESSAGE)
     private Integer peopleCount;
 
-    @NotNull(message = EXCURSION_PLACES_VALIDATION_MESSAGE)
-    private List<Long> places;
+    @NotNull(message = EXCURSION_COINS_COST_VALIDATION_MESSAGE)
+    @Min(value = EXCURSION_COINS_COST_MIN, message = EXCURSION_COINS_COST_VALIDATION_MESSAGE)
+    @Max(value = Long.MAX_VALUE, message = EXCURSION_COINS_COST_VALIDATION_MESSAGE)
+    private Long coinsCost;
+
+    @NotNull(message = EXCURSION_PLACES_IDS_VALIDATION_MESSAGE)
+    @NotEmpty(message = EXCURSION_PLACES_IDS_VALIDATION_MESSAGE)
+    private List<Long> placesIds;
 
     public ExcursionDto() {}
 }
