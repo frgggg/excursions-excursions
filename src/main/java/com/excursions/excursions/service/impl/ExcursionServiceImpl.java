@@ -16,9 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.excursions.excursions.exception.message.ExcursionServiceExceptionMessages.EXCURSION_SERVICE_EXCEPTION_SAVE_OR_UPDATE_EXIST_PLACE;
 
@@ -67,8 +65,8 @@ public class ExcursionServiceImpl implements ExcursionService {
 
                 if (notExistPlacesIds.size() > 0) {
                     //List<Long> notEndedExcursionsIdsByNotExistPlaces = excursionRepository.getNotEndedExcursionsIdsByNotExistPlaces(notExistPlacesIds);//, LocalDateTime.now());
-                    List<Long> notEndedExcursionsIdsByNotExistPlaces = excursionRepository.findByPlacesIdsIn(notExistPlacesIds);
-                    for(Long e: notEndedExcursionsIdsByNotExistPlaces){
+                    List<Excursion> notEndedExcursionsIdsByNotExistPlaces = excursionRepository.findByPlacesIdsInAndStartAfter(notExistPlacesIds, LocalDateTime.now());
+                    for(Excursion e: notEndedExcursionsIdsByNotExistPlaces){
                         System.out.println("exc = " + e);
                     }
                 }
