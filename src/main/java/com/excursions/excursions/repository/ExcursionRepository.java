@@ -13,4 +13,6 @@ public interface ExcursionRepository extends CrudRepository<Excursion, Long> {
     List<Long> getAllPlacesIds();
 
     List<Excursion> findByPlacesIdsInAndStartAfter(List<Long> notExistPlacesIds, LocalDateTime time);
+
+    List<Excursion> findByStopBefore(LocalDateTime time);
 }

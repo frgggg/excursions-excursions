@@ -13,4 +13,6 @@ public interface ExcursionService {
     Excursion save(String name, LocalDateTime start, LocalDateTime stop, Integer peopleCount, Long coinsCost, List<Long> placesIds);
     void deleteEndedExcursions();
     void deleteNotEndedExcursionsByNotExistPlaces();
+    Excursion findById(Long id);
+    List<Excursion> findAll();
 }
