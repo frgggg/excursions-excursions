@@ -7,7 +7,7 @@ public class TicketServiceLogMessages {
 
     public static final String TICKET_SERVICE_LOG_FIND_ALL = "find all tickets";
 
-    public static final String TICKET_SERVICE_LOG_FIND_TICKETS_COUNT_FOR_USER = "find tickets count {} for user with id {}";
+    public static final String TICKET_SERVICE_LOG_FIND_TICKETS_FOR_USER = "find tickets {} for user with id {}";
 
     public static final String TICKET_SERVICE_LOG_TICKET_DROP_BY_USER = "ticket with id {} drop by user";
 

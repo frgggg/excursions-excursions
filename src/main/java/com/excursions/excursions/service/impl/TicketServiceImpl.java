@@ -175,10 +175,10 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Long findTicketsCountForUserById(Long userId) {
-        Long count = ticketRepository.countByUserId(userId);
-        log.info(TICKET_SERVICE_LOG_FIND_TICKETS_COUNT_FOR_USER, count, userId);
-        return count;
+    public List<Ticket> findTicketsCountForUserById(Long userId) {
+        List<Ticket> tickets = ticketRepository.countByUserId(userId);
+        log.info(TICKET_SERVICE_LOG_FIND_TICKETS_FOR_USER, tickets, userId);
+        return tickets;
     }
 
     private void deleteNotActiveTicketsBackCoins() {
@@ -189,10 +189,18 @@ public class TicketServiceImpl implements TicketService {
         List<Ticket> tickets = ticketRepository.findByStateNotIn(ticketStatesNoBackCoins);
         List<Ticket> ticketsForDelete = new ArrayList<>();
 
-        //userService.coinsUpByExcursion(t.getUserId(), t.getCoinsCost());
         for(Ticket t: tickets) {
-
+            try {
+                userService.coinsUpByExcursion(t.getUserId(), t.getCoinsCost());
+            }
+            catch (ServiceException e)
+            {
+                continue;
+            }
+            ticketsForDelete.add(t);
         }
+
+        ticketRepository.deleteAll(ticketsForDelete);
      }
 
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)

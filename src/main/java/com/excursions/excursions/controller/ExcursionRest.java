@@ -10,6 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.excursions.excursions.log.message.ExcursionControllerLogMessages.*;
+
 @Slf4j
 @RestController
 @RequestMapping("/excursion")
@@ -37,7 +42,24 @@ public class ExcursionRest {
         );
 
         ExcursionDto savedExcursionDto = modelMapper.map(excursion, ExcursionDto.class);
+        log.info(EXCURSION_CONTROLLER_LOG_NEW_EXCURSION, savedExcursionDto);
         return savedExcursionDto;
+    }
+
+    @GetMapping
+    public List<ExcursionDto> getAll() {
+        log.info(EXCURSION_CONTROLLER_LOG_FIND_ALL);
+        return excursionService.findAll()
+                .stream()
+                .map(excursion -> modelMapper.map(excursion, ExcursionDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/{id}")
+    public ExcursionDto get(@PathVariable("id") Long id) {
+        Excursion excursion = excursionService.findById(id);
+        log.info(EXCURSION_CONTROLLER_LOG_FIND_EXCURSION, excursion);
+        return modelMapper.map(excursion, ExcursionDto.class);
     }
 
 }

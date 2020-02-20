@@ -10,7 +10,7 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
 
     Long countByExcursionIdAndStatus(Long excursionId, TicketState ticketState);
 
-    Long countByUserId(Long userId);
+    List<Ticket> findByUserId(Long userId);
 
     List<Ticket> findByExcursionIdInAndState(List<Long> excursionId, TicketState ticketState);
 
