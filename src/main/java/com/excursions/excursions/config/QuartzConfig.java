@@ -40,6 +40,8 @@ public class QuartzConfig {
                 .build();
     }
 
+
+
     @Bean("deleteNotEndedExcursionsByNotExistPlacesJobDetail")
     public JobDetail deleteNotEndedExcursionsByNotExistPlacesJobDetail(){
         return JobBuilder.newJob(DeleteNotEndedExcursionsByNotExistPlaces.class)
@@ -56,9 +58,11 @@ public class QuartzConfig {
                 .build();
     }
 
+
+
     @Bean("deleteNotActiveTicketsJobDetail")
     public JobDetail deleteNotActiveTicketsJobDetail(){
-        return JobBuilder.newJob(DeleteNotEndedExcursionsByNotExistPlaces.class)
+        return JobBuilder.newJob(DropNoActiveTickets.class)
                 .withIdentity(DropNoActiveTickets.class.getSimpleName() + JOB_IDENTITY_POSTFIX)
                 .storeDurably().build();
     }

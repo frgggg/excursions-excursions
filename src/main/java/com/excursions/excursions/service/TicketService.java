@@ -19,5 +19,5 @@ public interface TicketService {
     void setActiveTicketsAsDropByWrongExcursions(List<Excursion> wrongExcursions);
 
     void setActiveTicketsAsDropByNotEndedExcursions(Long id);
-    List<Ticket> findTicketsCountForUserById(Long userId);
+    List<Ticket> findTicketsForUserById(Long userId);
 }

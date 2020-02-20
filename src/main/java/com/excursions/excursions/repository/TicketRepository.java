@@ -15,5 +15,7 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
     List<Ticket> findByExcursionIdInAndState(List<Long> excursionId, TicketState ticketState);
 
     List<Ticket> findByStateNotIn(List<TicketState> ticketStates);
+
+
     void deleteByState(TicketState ticketState);
 }

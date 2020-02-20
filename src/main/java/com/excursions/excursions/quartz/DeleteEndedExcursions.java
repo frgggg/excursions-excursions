@@ -22,6 +22,6 @@ public class DeleteEndedExcursions implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         excursionService.deleteEndedExcursions();
-        log.debug(QUARTZ_LOG_JOB_IN_PROCESS, this.getClass().getSimpleName());
+        log.info(QUARTZ_LOG_JOB_IN_PROCESS, this.getClass().getSimpleName());
     }
 }

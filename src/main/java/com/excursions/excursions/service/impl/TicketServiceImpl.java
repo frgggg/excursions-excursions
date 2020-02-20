@@ -11,7 +11,6 @@ import com.excursions.excursions.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +38,6 @@ public class TicketServiceImpl implements TicketService {
 
     private EntityManager entityManager;
     private TicketRepository ticketRepository;
-    @Autowired
     private ExcursionService excursionService;
     private UserService userService;
 
@@ -83,7 +81,7 @@ public class TicketServiceImpl implements TicketService {
         List<Ticket> tickets = new ArrayList<>();
         ticketRepository.findAll().forEach(tickets::add);
         log.info(TICKET_SERVICE_LOG_FIND_ALL);
-        return null;
+        return tickets;
     }
 
     @Override
@@ -130,6 +128,7 @@ public class TicketServiceImpl implements TicketService {
         log.info(TICKET_SERVICE_LOG_TICKET_DROP_BY_NOT_ENDED_EXCURSION, ticket.getId());
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     @Override
     public void deleteNotActiveTickets() {
         deleteNotActiveTicketsNoBackCoins();
@@ -185,7 +184,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Ticket> findTicketsCountForUserById(Long userId) {
+    public List<Ticket> findTicketsForUserById(Long userId) {
         List<Ticket> tickets = ticketRepository.findByUserId(userId);
         log.info(TICKET_SERVICE_LOG_FIND_TICKETS_FOR_USER, tickets, userId);
         return tickets;
@@ -211,9 +210,8 @@ public class TicketServiceImpl implements TicketService {
         }
 
         ticketRepository.deleteAll(ticketsForDelete);
-     }
+    }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
     private void deleteNotActiveTicketsNoBackCoins() {
         ticketRepository.deleteByState(TicketState.DROP_BY_ENDED_EXCURSION);
     }
@@ -234,5 +232,11 @@ public class TicketServiceImpl implements TicketService {
         }
 
         return savedTicket;
+    }
+
+    public void setExcursionService(ExcursionService excursionService) {
+        if(this.excursionService == null) {
+            this.excursionService = excursionService;
+        }
     }
 }

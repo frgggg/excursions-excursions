@@ -34,8 +34,7 @@ public class ExcursionServiceImpl implements ExcursionService {
     private ExcursionRepository excursionRepository;
     private EntityManager entityManager;
     private PlaceService placeService;
-    @Autowired
-    private TicketService ticketService;
+    private TicketService ticketService = null;
 
     @Value("${excursion.ended.after-day}")
     private String deleteEndedExcursionsAfterDay;
@@ -150,5 +149,11 @@ public class ExcursionServiceImpl implements ExcursionService {
         }
 
         return savedExcursion;
+    }
+
+    public void setTicketService(TicketService ticketService) {
+        if(this.ticketService == null) {
+            this.ticketService = ticketService;
+        }
     }
 }

@@ -2,7 +2,6 @@ package com.excursions.excursions.controller;
 
 import com.excursions.excursions.dto.TicketDto;
 import com.excursions.excursions.model.Ticket;
-import com.excursions.excursions.service.ExcursionService;
 import com.excursions.excursions.service.TicketService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -48,9 +47,23 @@ public class TicketRest {
         return savedTicketDto;
     }
 
+    @GetMapping("/for-user-count")
+    public Long findTicketsCountForUser(@RequestParam(name = "user-id", required = true) Long userId) {
+        Long count = 0l;
+        List<Ticket> tickets = ticketService.findTicketsForUserById(userId);
+        if(tickets != null) {
+            if(tickets.size() > 0) {
+                count = new Long(tickets.size());
+            }
+        }
+
+        log.info(TICKET_CONTROLLER_LOG_FIND_TICKETS_COUNT_FOR_USER, count, userId);
+        return count;
+    }
+
     @GetMapping("/for-user")
     public List<TicketDto> findTicketsForUser(@RequestParam(name = "user-id", required = true) Long userId) {
-        List<Ticket> tickets = ticketService.findTicketsCountForUserById(userId);
+        List<Ticket> tickets = ticketService.findTicketsForUserById(userId);
         List<TicketDto> ticketDtos = null;
         if(tickets != null) {
             if(tickets.size() > 0) {
@@ -98,9 +111,15 @@ public class TicketRest {
         return ticketDto;
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/{id}/by-user")
     public void deleteByUser(@PathVariable("id") Long id) {
         ticketService.setActiveTicketsAsDropByUser(id);
         log.info(TICKET_CONTROLLER_LOG_TICKET_DROP_BY_USER, id);
+    }
+
+    @DeleteMapping(value = "/{id}/by-excursion")
+    public void deleteByNotEndedExcursion(@PathVariable("id") Long id) {
+        ticketService.setActiveTicketsAsDropByNotEndedExcursions(id);
+        log.info(TICKET_CONTROLLER_LOG_TICKET_DROP_BY_NOT_ENDED_EXCURSION, id);
     }
 }
