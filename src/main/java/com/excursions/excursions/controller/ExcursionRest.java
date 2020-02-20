@@ -75,4 +75,16 @@ public class ExcursionRest {
         return modelMapper.map(excursion, ExcursionDto.class);
     }
 
+    @PutMapping(value = "/{id}/set-new-tickets-enable")
+    public void setNewTicketsEnable(@PathVariable("id") Long id) {
+        excursionService.setEnabledNewTicketsById(id);
+        log.info(EXCURSION_CONTROLLER_LOG_SET_ENABLE_NEW_TICKETS, id);
+    }
+
+    @PutMapping(value = "/{id}/set-new-tickets-not-enable")
+    public void setNewTicketsNotEnable(@PathVariable("id") Long id) {
+        excursionService.setNotEnabledNewTicketsById(id);
+        log.info(EXCURSION_CONTROLLER_LOG_SET_NOT_ENABLE_NEW_TICKETS, id);
+    }
+
 }
