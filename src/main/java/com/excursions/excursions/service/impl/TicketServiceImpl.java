@@ -9,7 +9,9 @@ import com.excursions.excursions.service.ExcursionService;
 import com.excursions.excursions.service.TicketService;
 import com.excursions.excursions.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,8 @@ public class TicketServiceImpl implements TicketService {
     private ExcursionService excursionService;
     private UserService userService;
 
+    @Lazy
+    @Autowired
     protected TicketServiceImpl(TicketRepository ticketRepository, EntityManager entityManager, ExcursionService excursionService, UserService userService) {
         this.ticketRepository = ticketRepository;
         this.entityManager = entityManager;
@@ -62,7 +66,7 @@ public class TicketServiceImpl implements TicketService {
             throw new ServiceException(SERVICE_NAME, TICKET_SERVICE_EXCEPTION_NEW_TICKET_NOT_ENABLE);
         }
 
-        if(ticketRepository.countByExcursionIdAndStatus(excursionId, TicketState.ACTIVE) >= excursion.getPeopleCount()) {
+        if(ticketRepository.countByExcursionIdAndState(excursionId, TicketState.ACTIVE) >= excursion.getPeopleCount()) {
             throw new ServiceException(SERVICE_NAME, TICKET_SERVICE_EXCEPTION_MAX_PEOPLE_COUNT);
         }
 
@@ -100,6 +104,8 @@ public class TicketServiceImpl implements TicketService {
             throw new ServiceException(SERVICE_NAME, TICKET_SERVICE_EXCEPTION_TICKET_IS_NOT_ACTIVE);
         }
 
+        Excursion excursion = excursionService.findById(ticket.getExcursionId());
+
         if(LocalDateTime.now().plusDays(new Integer(deleteByUserBeforeStartMinusDay)).isAfter(excursion.getStart())) {
             throw new ServiceException(SERVICE_NAME, TICKET_SERVICE_EXCEPTION_EXCURSION_STARTED);
         }
@@ -133,9 +139,11 @@ public class TicketServiceImpl implements TicketService {
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
     @Override
     public void setActiveTicketsAsDropByEndedExcursions(List<Excursion> endedExcursions) {
+        List<Long> endedExcursionIds = null;
+
         if(endedExcursions != null) {
             if (endedExcursions.size() > 0) {
-                List<Long> endedExcursionIds = endedExcursions.stream().map(Excursion::getId).collect(Collectors.toList());
+                endedExcursionIds = endedExcursions.stream().map(Excursion::getId).collect(Collectors.toList());
                 List<Ticket> tickets = ticketRepository.findByExcursionIdInAndState(endedExcursionIds, TicketState.ACTIVE);
                 if(tickets != null) {
                     if(tickets.size() > 0) {
@@ -155,9 +163,10 @@ public class TicketServiceImpl implements TicketService {
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
     @Override
     public void setActiveTicketsAsDropByWrongExcursions(List<Excursion> wrongExcursions) {
+        List<Long> wrongExcursionsIds = null;
         if(wrongExcursions != null) {
             if(wrongExcursions.size() > 0) {
-                List<Long> wrongExcursionsIds = wrongExcursions.stream().map(Excursion::getId).collect(Collectors.toList());
+                wrongExcursionsIds = wrongExcursions.stream().map(Excursion::getId).collect(Collectors.toList());
                 List<Ticket> tickets = ticketRepository.findByExcursionIdInAndState(wrongExcursionsIds, TicketState.ACTIVE);
                 if(tickets != null) {
                     if(tickets.size() > 0) {
@@ -176,7 +185,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<Ticket> findTicketsCountForUserById(Long userId) {
-        List<Ticket> tickets = ticketRepository.countByUserId(userId);
+        List<Ticket> tickets = ticketRepository.findByUserId(userId);
         log.info(TICKET_SERVICE_LOG_FIND_TICKETS_FOR_USER, tickets, userId);
         return tickets;
     }

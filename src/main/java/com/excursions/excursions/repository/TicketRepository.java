@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TicketRepository extends CrudRepository<Ticket, Long> {
 
-    Long countByExcursionIdAndStatus(Long excursionId, TicketState ticketState);
+    Long countByExcursionIdAndState(Long excursionId, TicketState ticketState);
 
     List<Ticket> findByUserId(Long userId);
 

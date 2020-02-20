@@ -47,8 +47,7 @@ public class TicketRest {
         return savedTicketDto;
     }
 
-    @GetMapping
-    @ResponseBody
+    @GetMapping("/for-user")
     public List<TicketDto> findTicketsForUser(@RequestParam(name = "user-id", required = true) Long userId) {
         List<TicketDto> ticketDtos =  ticketService.findTicketsCountForUserById(userId)
                 .stream()

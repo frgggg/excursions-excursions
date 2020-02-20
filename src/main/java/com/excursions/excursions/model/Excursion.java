@@ -79,7 +79,7 @@ public class Excursion {
     @Column(name = "place_id")
     private List<Long> placesIds;
 
-    @Column(name = "enable-new-tickets")
+    @Column(name = "enable_new_tickets")
     private Boolean enableNewTickets;
 
     protected Excursion() {}
