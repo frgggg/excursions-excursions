@@ -10,11 +10,14 @@ public interface TicketService {
     Ticket create(Long userId, Long excursionId, Long expectedCoinsCost);
     void setActiveTicketsAsDropByUser(Long id);
 
+    List<Ticket> findAll();
+    Ticket findById(Long id);
+
     void deleteNotActiveTickets();
 
     void setActiveTicketsAsDropByEndedExcursions(List<Excursion> endedExcursions);
     void setActiveTicketsAsDropByWrongExcursions(List<Excursion> wrongExcursions);
 
     void setActiveTicketsAsDropByNotEndedExcursions(Long id);
-    Long findTicketsCountForUserById(Long id);
+    Long findTicketsCountForUserById(Long userId);
 }

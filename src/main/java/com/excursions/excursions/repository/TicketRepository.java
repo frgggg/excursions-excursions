@@ -2,10 +2,18 @@ package com.excursions.excursions.repository;
 
 import com.excursions.excursions.model.Ticket;
 import com.excursions.excursions.model.TicketState;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 public interface TicketRepository extends CrudRepository<Ticket, Long> {
-    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.excursionId=?1 and t.state=" + TicketState.ACTIVE)
-    Long getActiveTicketsCountForExcursion(Long excursionId);
+
+    Long countByExcursionIdAndStatus(Long excursionId, TicketState ticketState);
+
+    Long countByUserId(Long userId);
+
+    List<Ticket> findByExcursionIdInAndState(List<Long> excursionId, TicketState ticketState);
+
+    List<Ticket> findByStateNotIn(List<TicketState> ticketStates);
+    void deleteByState(TicketState ticketState);
 }

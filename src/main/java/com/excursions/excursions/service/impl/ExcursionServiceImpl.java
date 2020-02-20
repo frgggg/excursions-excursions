@@ -81,38 +81,40 @@ public class ExcursionServiceImpl implements ExcursionService {
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
     @Override
     public void deleteEndedExcursions() {
-        List<Excursion> endedExcursions = excursionRepository.findByStopBefore(LocalDateTime.now());
+        List<Excursion> endedExcursions = excursionRepository.findByStopBefore(LocalDateTime.now().plusDays(new Integer(deleteEndedExcursionsAfterDay)));
         if(endedExcursions != null) {
             if(endedExcursions.size() > 0) {
                 ticketService.setActiveTicketsAsDropByEndedExcursions(endedExcursions);
                 excursionRepository.deleteAll(endedExcursions);
-                log.info(EXCURSION_SERVICE_LOG_DELETE_ENDED_EXCURSION, endedExcursions);
             }
         }
+        log.info(EXCURSION_SERVICE_LOG_DELETE_ENDED_EXCURSION, endedExcursions);
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
     @Override
     public void deleteNotEndedExcursionsByNotExistPlaces() {
+        List<Excursion> notEndedExcursionsWithNotExistPlaces = null;
+        List<Long> notExistPlacesIds = null;
+
         List<Long> allPlacesIds = excursionRepository.getAllPlacesIds();
 
         if(allPlacesIds != null) {
             if(allPlacesIds.size() > 0) {
-
-                List<Long> notExistPlacesIds = placeService.getNotExistPlacesIds(allPlacesIds);
+                notExistPlacesIds = placeService.getNotExistPlacesIds(allPlacesIds);
                 if (notExistPlacesIds.size() > 0) {
-                    List<Excursion> notEndedExcursionsWithNotExistPlaces = excursionRepository.findByPlacesIdsInAndStartAfter(notExistPlacesIds, LocalDateTime.now());
+                    notEndedExcursionsWithNotExistPlaces = excursionRepository.findByPlacesIdsInAndStartAfter(notExistPlacesIds, LocalDateTime.now());
                     if(notEndedExcursionsWithNotExistPlaces != null) {
                         if(notEndedExcursionsWithNotExistPlaces.size() > 0) {
                             ticketService.setActiveTicketsAsDropByWrongExcursions(notEndedExcursionsWithNotExistPlaces);
                             excursionRepository.deleteAll(notEndedExcursionsWithNotExistPlaces);
-                            log.info(EXCURSION_SERVICE_LOG_DELETE_NOT_ENDED_EXCURSION_BY_NOT_EXIST_PLACE, notEndedExcursionsWithNotExistPlaces, notExistPlacesIds);
                         }
                     }
                 }
-
             }
         }
+
+        log.info(EXCURSION_SERVICE_LOG_DELETE_NOT_ENDED_EXCURSION_BY_NOT_EXIST_PLACE, notEndedExcursionsWithNotExistPlaces, notExistPlacesIds);
     }
 
     @Override
