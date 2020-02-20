@@ -40,12 +40,10 @@ public class ExcursionServiceImpl implements ExcursionService {
     private String deleteEndedExcursionsAfterDay;
 
     @Autowired
-    //protected ExcursionServiceImpl(ExcursionRepository excursionRepository, EntityManager entityManager, PlaceService placeService, TicketService ticketService) {
     protected ExcursionServiceImpl(ExcursionRepository excursionRepository, EntityManager entityManager, PlaceService placeService) {
         this.excursionRepository = excursionRepository;
         this.entityManager = entityManager;
         this.placeService = placeService;
-        //this.ticketService = ticketService;
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
