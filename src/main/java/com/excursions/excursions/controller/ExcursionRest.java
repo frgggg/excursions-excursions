@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,11 +49,23 @@ public class ExcursionRest {
 
     @GetMapping
     public List<ExcursionDto> getAll() {
+        List<ExcursionDto> excursionDtos = null;
+        List<Excursion> excursions = excursionService.findAll();
+
+        if(excursions != null) {
+            if(excursions.size() > 0) {
+                excursionDtos = excursions
+                        .stream()
+                        .map(excursion -> modelMapper.map(excursion, ExcursionDto.class))
+                        .collect(Collectors.toList());
+            }
+        }
+
+        if(excursionDtos == null) {
+            excursionDtos = new ArrayList<ExcursionDto>();
+        }
         log.info(EXCURSION_CONTROLLER_LOG_FIND_ALL);
-        return excursionService.findAll()
-                .stream()
-                .map(excursion -> modelMapper.map(excursion, ExcursionDto.class))
-                .collect(Collectors.toList());
+        return excursionDtos;
     }
 
     @GetMapping(value = "/{id}")

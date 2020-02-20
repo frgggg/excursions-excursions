@@ -39,15 +39,16 @@ public class TicketServiceImpl implements TicketService {
 
     private EntityManager entityManager;
     private TicketRepository ticketRepository;
+    @Autowired
     private ExcursionService excursionService;
     private UserService userService;
 
-    @Lazy
     @Autowired
-    protected TicketServiceImpl(TicketRepository ticketRepository, EntityManager entityManager, ExcursionService excursionService, UserService userService) {
+    //protected TicketServiceImpl(TicketRepository ticketRepository, EntityManager entityManager, ExcursionService excursionService, UserService userService) {
+    protected TicketServiceImpl(TicketRepository ticketRepository, EntityManager entityManager, UserService userService) {
         this.ticketRepository = ticketRepository;
         this.entityManager = entityManager;
-        this.excursionService = excursionService;
+        //this.excursionService = excursionService;
         this.userService = userService;
     }
 

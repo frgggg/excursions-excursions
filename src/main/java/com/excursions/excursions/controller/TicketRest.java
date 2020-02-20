@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,22 +50,44 @@ public class TicketRest {
 
     @GetMapping("/for-user")
     public List<TicketDto> findTicketsForUser(@RequestParam(name = "user-id", required = true) Long userId) {
-        List<TicketDto> ticketDtos =  ticketService.findTicketsCountForUserById(userId)
-                .stream()
-                .map(ticket -> modelMapper.map(ticket, TicketDto.class))
-                .collect(Collectors.toList());
+        List<Ticket> tickets = ticketService.findTicketsCountForUserById(userId);
+        List<TicketDto> ticketDtos = null;
+        if(tickets != null) {
+            if(tickets.size() > 0) {
+                ticketDtos = tickets
+                        .stream()
+                        .map(ticket -> modelMapper.map(ticket, TicketDto.class))
+                        .collect(Collectors.toList());
+            }
+        }
+
+        if(ticketDtos == null) {
+            ticketDtos = new ArrayList<TicketDto>();
+        }
         log.info(TICKET_CONTROLLER_LOG_FIND_TICKETS_FOR_USER, ticketDtos, userId);
         return ticketDtos;
     }
 
     @GetMapping
     public List<TicketDto> findAll() {
-        List<TicketDto> allPlaces =  ticketService.findAll()
-                .stream()
-                .map(ticket -> modelMapper.map(ticket, TicketDto.class))
-                .collect(Collectors.toList());
+        List<Ticket> tickets = ticketService.findAll();
+        List<TicketDto> ticketDtos = null;
+
+        if(tickets != null) {
+            if(tickets.size() > 0) {
+                ticketDtos = tickets
+                        .stream()
+                        .map(ticket -> modelMapper.map(ticket, TicketDto.class))
+                        .collect(Collectors.toList());
+            }
+        }
+
+        if(ticketDtos == null) {
+            ticketDtos = new ArrayList<TicketDto>();
+        }
+
         log.info(TICKET_CONTROLLER_LOG_FIND_ALL);
-        return allPlaces;
+        return ticketDtos;
     }
 
     @GetMapping(value = "/{id}")

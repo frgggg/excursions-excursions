@@ -34,17 +34,19 @@ public class ExcursionServiceImpl implements ExcursionService {
     private ExcursionRepository excursionRepository;
     private EntityManager entityManager;
     private PlaceService placeService;
+    @Autowired
     private TicketService ticketService;
 
     @Value("${excursion.ended.after-day}")
     private String deleteEndedExcursionsAfterDay;
 
     @Autowired
-    protected ExcursionServiceImpl(ExcursionRepository excursionRepository, EntityManager entityManager, PlaceService placeService, TicketService ticketService) {
+    //protected ExcursionServiceImpl(ExcursionRepository excursionRepository, EntityManager entityManager, PlaceService placeService, TicketService ticketService) {
+    protected ExcursionServiceImpl(ExcursionRepository excursionRepository, EntityManager entityManager, PlaceService placeService) {
         this.excursionRepository = excursionRepository;
         this.entityManager = entityManager;
         this.placeService = placeService;
-        this.ticketService = ticketService;
+        //this.ticketService = ticketService;
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = ServiceException.class)
